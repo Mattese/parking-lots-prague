@@ -24,7 +24,7 @@
 
 .sidePanelControlElement {
   height: 6rem;
-  width: 2rem;
+  width: 100%;
   background-color: colors.$black;
   color: colors.$red;
   position: relative;
@@ -33,6 +33,10 @@
   writing-mode: vertical-rl;
   text-orientation: upright;
   text-align: center;
-
   cursor: pointer;
+  transition: background-color 2s ease-in;
+  :hover {
+    background-color: colors.$red;
+    color: colors.$black;
+  }
 }

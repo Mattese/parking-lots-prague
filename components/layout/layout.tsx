@@ -20,9 +20,7 @@ export const Layout: React.FC = ({ children }) => {
         </div>
       </div>
       <div className={styles.body}>
-        <>
-          {children}
-        </>
+        <>{children}</>
       </div>
     </div>
   );

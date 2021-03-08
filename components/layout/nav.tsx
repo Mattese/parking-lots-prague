@@ -2,7 +2,7 @@ import Link from "next/link";
 import styles from "./nav.module.scss";
 import { FaHome, FaTable } from "react-icons/fa";
 
-const ICON_SIZE = 35;
+const ICON_SIZE = 30;
 
 interface ComponentProps {
   sidePanelHidden: boolean;
@@ -32,13 +32,11 @@ const Nav: React.FC<ComponentProps> = ({ sidePanelHidden }) => (
       </li>
       {links.map((link, index) => (
         <li className={styles.navItem} key={index}>
-          <div>
-            <Link href={link.href}>
-              <a>
-                {sidePanelHidden ? "" : <h2>{link.label}</h2>} {link.icon}
-              </a>
-            </Link>
-          </div>
+          <Link href={link.href}>
+            <a>
+              {sidePanelHidden ? "" : <h2>{link.label}</h2>} {link.icon}
+            </a>
+          </Link>
         </li>
       ))}
     </ul>
