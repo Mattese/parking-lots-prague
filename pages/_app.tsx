@@ -1,5 +1,3 @@
-// import App from 'next/app'
-
 import { Layout } from "../components/layout/layout";
 import "styles/styles.scss";
 

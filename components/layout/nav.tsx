@@ -13,6 +13,7 @@ const links = [
     href: "https://github.com/themodernjavascript/create-next-app-cli",
     label: "Github",
     icon: <FaTable size={ICON_SIZE} />,
+    key: "",
   },
 ].map((link) => {
   link.key = `nav-link-${link.href}-${link.label}`;
@@ -22,19 +23,22 @@ const links = [
 const Nav: React.FC<ComponentProps> = ({ sidePanelHidden }) => (
   <nav>
     <ul>
-      <li className={styles.navItem}>
+      <li className={sidePanelHidden ? styles.navItemHidden : styles.navItem}>
         <Link prefetch href="/">
           <a>
-            {sidePanelHidden ? "" : <h2>Home</h2>}
+            <h2>Home</h2>
             <FaHome size={ICON_SIZE} />
           </a>
         </Link>
       </li>
       {links.map((link, index) => (
-        <li className={styles.navItem} key={index}>
+        <li
+          className={sidePanelHidden ? styles.navItemHidden : styles.navItem}
+          key={index}
+        >
           <Link href={link.href}>
             <a>
-              {sidePanelHidden ? "" : <h2>{link.label}</h2>} {link.icon}
+              <h2>{link.label}</h2> {link.icon}
             </a>
           </Link>
         </li>
