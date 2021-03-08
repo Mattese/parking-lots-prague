@@ -1,0 +1,29 @@
+@use 'styles/_colors.scss' as colors;
+
+.navItem {
+  width: 100%;
+  border: 1px solid colors.$grey;
+  background-color: colors.$black;
+  border-left: 0;
+  border-right: 0;
+  :hover {
+    cursor: pointer;
+    opacity: 0.75;
+  }
+  a {
+    color: colors.$red;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    :focus,
+    :hover {
+      text-decoration: none;
+      opacity: 1;
+    }
+    > h2 {
+      margin-right: 10px;
+    }
+  }
+}
