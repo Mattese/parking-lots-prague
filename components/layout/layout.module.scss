@@ -1,0 +1,42 @@
+@use 'styles/_colors.scss' as colors;
+
+.layoutWrapper {
+  display: flex;
+}
+
+.sidePanel {
+  width: 270px;
+  height: 100vh;
+  background-color: colors.$black;
+  transition: 0.75s ease-in-out;
+  padding: 2rem 0;
+  &Hidden {
+    @extend .sidePanel;
+    width: 50px;
+  }
+}
+
+.body {
+  width: 100%;
+  background-color: colors.$grey;
+  padding: 3rem;
+}
+
+.sidePanelControlElement {
+  height: 6rem;
+  width: 100%;
+  background-color: colors.$black;
+  color: colors.$red;
+  position: relative;
+  top: 0;
+  right: -100%;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 2s ease-in;
+  :hover {
+    background-color: colors.$red;
+    color: colors.$black;
+  }
+}
