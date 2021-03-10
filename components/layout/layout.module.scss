@@ -6,7 +6,7 @@
 
 .sidePanel {
   width: 270px;
-  height: 100vh;
+  min-height: 100%;
   background-color: colors.$black;
   transition: 0.75s ease-in-out;
   padding: 2rem 0;
