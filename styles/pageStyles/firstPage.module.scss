@@ -1,0 +1,34 @@
+@use 'styles/_colors.scss' as colors;
+
+.cardWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.addressBox {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: colors.$blue;
+  .row {
+    margin: 0.25rem 0;
+    word-wrap: break-word;
+    h2 {
+      color: colors.$red;
+    }
+    p {
+      font-weight: bold;
+      color: colors.$white;
+    }
+  }
+}
+
+.noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

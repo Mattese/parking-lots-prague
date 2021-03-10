@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { DetailCard } from 'components/detailCard/DetailCard';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pie, Line } from 'react-chartjs-2';
 import { Parking, ParkingsData } from 'types/types';
+import styles from 'styles/pageStyles/firstPage.module.scss';
+import MyMap from 'components/myMap/myMap';
+import Link from 'next/link';
+import { formatDate } from 'functions/date';
+import { capitalize } from 'functions/string';
 
 // TODO: Hide API_KEY
 const downloadData = async () => {
@@ -18,25 +23,26 @@ const downloadData = async () => {
 };
 
 const makeCurrentOccupancyDonut = (freePlaces: number, takenPlaces: number) => {
-  return (
-    freePlaces &&
-    takenPlaces && (
-      <Pie
-        data={{
-          labels: ['Free places', 'Occupied places'],
-          datasets: [
-            {
-              label: 'Parking places',
-              data: [freePlaces, takenPlaces],
-              backgroundColor: ['green', 'red'],
-            },
-          ],
-        }}
-        width={100}
-        height={100}
-        options={{ maintainAspectRatio: false, responsive: true }}
-      />
-    )
+  return freePlaces && takenPlaces ? (
+    <Pie
+      data={{
+        labels: ['Free places', 'Occupied places'],
+        datasets: [
+          {
+            label: 'Parking places',
+            data: [freePlaces, takenPlaces],
+            backgroundColor: ['green', 'red'],
+          },
+        ],
+      }}
+      width={100}
+      height={100}
+      options={{ maintainAspectRatio: false, responsive: true }}
+    />
+  ) : (
+    <div className={styles.noData}>
+      <h2>No data for current occupancy </h2>
+    </div>
   );
 };
 
@@ -45,7 +51,10 @@ const currentDayIndex = () => {
 };
 
 const calculateOccupancyForToday = (totalPlaces: number, occupancyForToday) => {
-  const percentageArray = occupancyForToday.map((element) => Math.floor((element / totalPlaces) * 100));
+  const percentageArray = occupancyForToday.map((element) => {
+    console.log(element, totalPlaces);
+    return Math.floor((element / totalPlaces) * 100);
+  });
   return percentageArray;
 };
 
@@ -53,15 +62,20 @@ const makeOccupancyGraphForThisDayInWeek = (
   occupancyObject: { [key: string]: { [key: string]: number } },
   totalPlaces: number,
 ) => {
+  let occupancyForTodayValues;
   const occupancy = JSON.parse(JSON.stringify(occupancyObject));
   const todayDayIndex = currentDayIndex();
-  const occupancyForTodayValues = Object.entries(occupancy[todayDayIndex]).sort();
-  calculateOccupancyForToday(
-    78,
-    occupancyForTodayValues.map((t) => t[1]),
-  );
+  const isDataForToday = !!occupancy[todayDayIndex];
 
-  return (
+  if (isDataForToday) {
+    occupancyForTodayValues = Object.entries(occupancy[todayDayIndex]).sort();
+    calculateOccupancyForToday(
+      totalPlaces,
+      occupancyForTodayValues.map((t) => t[1]),
+    );
+  }
+
+  return isDataForToday ? (
     <Line
       data={{
         labels: occupancyForTodayValues.map((t) => t[0]),
@@ -79,6 +93,29 @@ const makeOccupancyGraphForThisDayInWeek = (
       height={100}
       options={{ maintainAspectRatio: false, responsive: true }}
     />
+  ) : (
+    <div className={styles.noData}>
+      <h2>No data for this day in week </h2>
+    </div>
+  );
+};
+
+const renderParkingInfo = (parkingProperties: Parking['properties']) => {
+  return (
+    <div className={styles.addressBox}>
+      <div className={styles.row}>
+        <h2>District</h2>
+        <p>{capitalize(parkingProperties.district)}</p>
+      </div>
+      <div className={styles.row}>
+        <h2>Address</h2>
+        <p>{capitalize(parkingProperties.address.address_formatted)} </p>
+      </div>
+      <div className={styles.row}>
+        <h2>Last updated</h2>
+        <p>{formatDate(parkingProperties.last_updated, 'DD.MM.YYYY, HH.mm')}</p>
+      </div>
+    </div>
   );
 };
 
@@ -96,18 +133,32 @@ const Index = () => {
   return (
     <>
       body
-      {parkings?.length > 0 && (
-        <DetailCard
-          header={parkings[0].properties.name}
-          contentBack={makeCurrentOccupancyDonut(
-            parkings[0]?.properties?.num_of_free_places,
-            parkings[0]?.properties?.num_of_taken_places,
-          )}
-          contentFront={makeOccupancyGraphForThisDayInWeek(
-            parkings[0]?.properties?.average_occupancy,
-            parkings[0]?.properties?.num_of_taken_places,
-          )}
-        />
+      {/* <MyMap
+        isMarkerShown
+        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+        loadingElement={<div style={{ height: `100%` }} />}
+        containerElement={<div style={{ height: `100px` }} />}
+        mapElement={<div style={{ height: `100%` }} />}
+        positions={parkings[0].geometry.coordinates}
+      /> */}
+      {parkings.length > 0 && (
+        <div className={styles.cardWrapper}>
+          {parkings.map((parking, index) => (
+            <DetailCard
+              key={index}
+              header={parking.properties.name}
+              contentBack={makeCurrentOccupancyDonut(
+                parking.properties.num_of_free_places,
+                parking.properties.num_of_taken_places,
+              )}
+              contentFront={makeOccupancyGraphForThisDayInWeek(
+                parking.properties.average_occupancy,
+                parking.properties.total_num_of_places,
+              )}
+              middleInfoBox={renderParkingInfo(parking.properties)}
+            />
+          ))}
+        </div>
       )}
     </>
   );

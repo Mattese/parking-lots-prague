@@ -5,9 +5,17 @@ interface ComponentProps {
   header: string;
   contentFront: ReactNode;
   contentBack: ReactNode;
+  middleInfoBox?: ReactNode;
+  bottomInfoBox?: ReactNode;
 }
 
-export const DetailCard: React.FC<ComponentProps> = ({ header, contentFront, contentBack }) => {
+export const DetailCard: React.FC<ComponentProps> = ({
+  header,
+  contentFront,
+  contentBack,
+  middleInfoBox,
+  bottomInfoBox,
+}) => {
   const [flipped, setFlipped] = useState(false);
   return (
     <div className={`${styles.card} ${styles.pseudoHover}`}>
@@ -23,6 +31,8 @@ export const DetailCard: React.FC<ComponentProps> = ({ header, contentFront, con
         <div className={styles.cardFront}>{contentFront}</div>
         <div className={styles.cardBack}>{contentBack}</div>
       </div>
+      <div>{middleInfoBox}</div>
+      <div>{bottomInfoBox}</div>
     </div>
   );
 };
