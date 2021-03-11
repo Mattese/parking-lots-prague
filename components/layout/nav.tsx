@@ -1,6 +1,6 @@
-import Link from "next/link";
-import styles from "./nav.module.scss";
-import { FaHome, FaTable } from "react-icons/fa";
+import Link from 'next/link';
+import styles from './nav.module.scss';
+import { FaHome, FaTable, FaLinkedin, FaGithub } from 'react-icons/fa';
 
 const ICON_SIZE = 30;
 
@@ -10,10 +10,16 @@ interface ComponentProps {
 
 const links = [
   {
-    href: "https://github.com/themodernjavascript/create-next-app-cli",
-    label: "Github",
-    icon: <FaTable size={ICON_SIZE} />,
-    key: "",
+    href: 'https://github.com/Mattese',
+    label: 'Github',
+    icon: <FaGithub size={ICON_SIZE} />,
+    key: '',
+  },
+  {
+    href: 'https://www.linkedin.com/in/martin-reichl-48468994/',
+    label: 'LinkedIn',
+    icon: <FaLinkedin size={ICON_SIZE} />,
+    key: '',
   },
 ].map((link) => {
   link.key = `nav-link-${link.href}-${link.label}`;
@@ -32,10 +38,7 @@ const Nav: React.FC<ComponentProps> = ({ sidePanelHidden }) => (
         </Link>
       </li>
       {links.map((link, index) => (
-        <li
-          className={sidePanelHidden ? styles.navItemHidden : styles.navItem}
-          key={index}
-        >
+        <li className={sidePanelHidden ? styles.navItemHidden : styles.navItem} key={index}>
           <Link href={link.href}>
             <a>
               <h2>{link.label}</h2> {link.icon}
