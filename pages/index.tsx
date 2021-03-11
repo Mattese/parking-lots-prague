@@ -8,19 +8,7 @@ import MyMap from 'components/myMap/myMap';
 import Link from 'next/link';
 import { formatDate } from 'functions/date';
 import { capitalize } from 'functions/string';
-
-// TODO: Hide API_KEY
-const downloadData = async () => {
-  try {
-    const { data } = await axios.get('https://api.golemio.cz/v2/parkings/', {
-      headers: {
-        'x-access-token':
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlaWNobG1Ac2V6bmFtLmN6IiwiaWQiOjY4MywibmFtZSI6bnVsbCwic3VybmFtZSI6bnVsbCwiaWF0IjoxNjE0OTU5MTUxLCJleHAiOjExNjE0OTU5MTUxLCJpc3MiOiJnb2xlbWlvIiwianRpIjoiMmJlYTFjMzMtYjllMi00MzU3LTg0Y2MtMjNmMTUwYjQ0NDdkIn0.bePD7p4wf3K--ohk38oadTIFE7EmmNNiZfRjeH2tcuA',
-      },
-    });
-    return data;
-  } catch (error) {}
-};
+import { DetailCardSkeleton } from 'components/detailCard/DetailCardSkeleton';
 
 const makeCurrentOccupancyDonut = (freePlaces: number, takenPlaces: number) => {
   return freePlaces && takenPlaces ? (
@@ -52,7 +40,6 @@ const currentDayIndex = () => {
 
 const calculateOccupancyForToday = (totalPlaces: number, occupancyForToday) => {
   const percentageArray = occupancyForToday.map((element) => {
-    console.log(element, totalPlaces);
     return Math.floor((element / totalPlaces) * 100);
   });
   return percentageArray;
@@ -121,27 +108,40 @@ const renderParkingInfo = (parkingProperties: Parking['properties']) => {
 
 const Index = () => {
   const [parkings, setParkings] = useState<ParkingsData['features']>([]);
+  const [loading, setLoading] = useState(false);
 
-  console.log(parkings, 'parkings');
+  // TODO: Hide API_KEY
+  const loadParkingData = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get('https://api.golemio.cz/v2/parkings/', {
+        headers: {
+          'x-access-token':
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlaWNobG1Ac2V6bmFtLmN6IiwiaWQiOjY4MywibmFtZSI6bnVsbCwic3VybmFtZSI6bnVsbCwiaWF0IjoxNjE0OTU5MTUxLCJleHAiOjExNjE0OTU5MTUxLCJpc3MiOiJnb2xlbWlvIiwianRpIjoiMmJlYTFjMzMtYjllMi00MzU3LTg0Y2MtMjNmMTUwYjQ0NDdkIn0.bePD7p4wf3K--ohk38oadTIFE7EmmNNiZfRjeH2tcuA',
+        },
+      });
+      return data;
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    downloadData().then((parkings: ParkingsData) => {
+    loadParkingData().then((parkings: ParkingsData) => {
       setParkings(parkings.features);
     });
   }, []);
 
   return (
     <>
-      body
-      {/* <MyMap
-        isMarkerShown
-        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-        loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `100px` }} />}
-        mapElement={<div style={{ height: `100%` }} />}
-        positions={parkings[0].geometry.coordinates}
-      /> */}
-      {parkings.length > 0 && (
+      {loading ? (
+        <div className={styles.cardWrapper}>
+          <DetailCardSkeleton />
+          <DetailCardSkeleton />
+          <DetailCardSkeleton />
+        </div>
+      ) : parkings.length > 0 ? (
         <div className={styles.cardWrapper}>
           {parkings.map((parking, index) => (
             <DetailCard
@@ -159,8 +159,21 @@ const Index = () => {
             />
           ))}
         </div>
+      ) : (
+        'No data available'
       )}
     </>
   );
 };
 export default Index;
+
+{
+  /* <MyMap
+        isMarkerShown
+        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+        loadingElement={<div style={{ height: `100%` }} />}
+        containerElement={<div style={{ height: `100px` }} />}
+        mapElement={<div style={{ height: `100%` }} />}
+        positions={parkings[0].geometry.coordinates}
+      /> */
+}

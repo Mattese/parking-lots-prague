@@ -1,4 +1,4 @@
-import { ReactComponentElement, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import styles from './detailCard.module.scss';
 
 interface ComponentProps {
