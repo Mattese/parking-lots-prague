@@ -28,7 +28,7 @@ type ParkingType = {
   id: number;
 };
 
-type AverageOccupancy = Record<string, number>;
+type AverageOccupancy = Record<string, Record<string, number>>;
 
 type Address = {
   address_formatted: string;

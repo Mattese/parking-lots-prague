@@ -106,9 +106,20 @@ const renderParkingInfo = (parkingProperties: Parking['properties']) => {
   );
 };
 
+function solution(S, K) {
+  // write your code in JavaScript (Node.js 8.9.4)
+  const dayArray = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const dayIndex = dayArray.findIndex((day) => day === S);
+  const index = dayIndex + K > 6 ? (dayIndex + K) % 7 : dayIndex + K;
+  console.log(dayArray[index])
+  return dayArray[index];
+}
+
 const Index = () => {
   const [parkings, setParkings] = useState<ParkingsData['features']>([]);
   const [loading, setLoading] = useState(false);
+
+  solution('Sat', 23);
 
   // TODO: Hide API_KEY
   const loadParkingData = async () => {
